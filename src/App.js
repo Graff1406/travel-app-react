@@ -1,11 +1,7 @@
-import DefaultLayout from './layouts/default/DefaultLayout'
-
-// <dev></div>
-// <img />
-// <input src="image.jpg" />
+import VendingMachineLayout from './layouts/default/VendingMachineLayout'
 
 function App() {
-  return <DefaultLayout />
+  return <VendingMachineLayout />
 }
 
 export default App;
