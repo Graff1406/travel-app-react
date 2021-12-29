@@ -26,10 +26,12 @@ function ChosenProducts() {
   const leftChange = useSelector((state) => state.products.changeCoins);
   const activeStep = useSelector((state) => state.products.step);
 
-  let totalPriceAllOfProducts = +chosenProducts.reduce((ac, cu) => {
-    ac += cu.sum;
-    return ac;
-  }, 0);
+  let totalPriceAllOfProducts = +chosenProducts
+    .reduce((ac, cu) => {
+      ac += cu.sum;
+      return ac;
+    }, 0)
+    ?.toFixed(2);
 
   const countChangeWhatWeWillGiveInTheEnd = () => {
     if (chosenCoins > totalPriceAllOfProducts) {
@@ -51,7 +53,11 @@ function ChosenProducts() {
   const handleSetActiveStep = (step) => dispatch(reducerStep(step));
 
   const handleChosenCoin = (coin) => {
-    setChosenCoins((prevChosenCoins) => +prevChosenCoins + +coin);
+    setChosenCoins((prevChosenCoins) => {
+      const coins = +prevChosenCoins + +coin;
+      if (coins?.toString()?.length > 4) return +coins?.toFixed(2);
+      return coins;
+    });
   };
 
   const handleTakeChange = () => {
