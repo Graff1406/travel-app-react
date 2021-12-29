@@ -21,20 +21,6 @@ function DepositMoney({
   handleChosenCoin,
   handleSetActiveStep,
 }) {
-  let errorText = "";
-
-  if (chosenCoins < totalPriceAllOfProducts) {
-    errorText = "Not enough money deposited";
-  }
-
-  if (leftChange < change) {
-    errorText =
-      "There is not enough change in the machine. Left Change is equal £" +
-      leftChange +
-      " but you need to pick up £" +
-      change;
-  }
-
   return (
     <>
       <StepLabel>
@@ -58,14 +44,41 @@ function DepositMoney({
           <Typography variant="subtitle2" gutterBottom component="div">
             Money deposited: £{chosenCoins}
           </Typography>
-          <Typography
-            variant="caption"
-            display="block"
-            gutterBottom
-            style={{ color: "red" }}
-          >
-            {errorText}
-          </Typography>
+          {chosenCoins < totalPriceAllOfProducts && (
+            <Typography
+              variant="caption"
+              display="block"
+              gutterBottom
+              style={{ color: "red" }}
+            >
+              Not enough money deposited
+            </Typography>
+          )}
+          {leftChange < change && (
+            <Typography
+              variant="caption"
+              display="block"
+              gutterBottom
+              style={{ color: "red" }}
+            >
+              There is not enough change in the machine. Left Change is equal
+              <Typography
+                variant="subtitle2"
+                component="span"
+                sx={{ mx: "5px" }}
+              >
+                £{leftChange}
+              </Typography>
+              but you need to pick up
+              <Typography
+                variant="subtitle2"
+                component="span"
+                sx={{ mx: "5px" }}
+              >
+                £{+change?.toFixed(2)}
+              </Typography>
+            </Typography>
+          )}
           <Typography variant="subtitle2" gutterBottom component="div">
             For payment: £{totalPriceAllOfProducts}
           </Typography>
