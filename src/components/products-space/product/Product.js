@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 
-// import "./vending-machine.css";
-
+// MUI
 import {
   Grid,
   Card,
@@ -12,28 +12,64 @@ import {
   ButtonGroup,
   Typography,
 } from "@mui/material";
+
+// MUI - icons
 import { Remove as RemoveIcon, Add as AddIcon } from "@mui/icons-material";
 
-function Product({ product, countTotalSum, resetCount, pushResetCount }) {
+// Store
+import { useSelector, useDispatch } from "react-redux";
+import {
+  reducerResetChosenQuantityProduct,
+  reducerToChosenProducts,
+  reducerStep,
+} from "../../../store/reducers";
+
+function Product({ product }) {
+  const dispatch = useDispatch();
+
   const [count, setCount] = useState(0);
 
-  useEffect(() => {
-    if (resetCount) setCount(0);
-  }, [resetCount]);
+  const resetChosenQuantityProduct = useSelector(
+    (state) => state.products.resetChosenQuantityProduct
+  );
+
+  let chosenProducts = useSelector((state) => state.products.chosenProducts);
 
   useEffect(() => {
-    // if (count === 1) pushResetCount();
-  }, [count]);
+    if (resetChosenQuantityProduct && count) {
+      setCount(0);
+      dispatch(reducerResetChosenQuantityProduct(false));
+      dispatch(reducerToChosenProducts([]));
+    }
+  }, [resetChosenQuantityProduct]);
 
-  function chooseProduct(total) {
+  const handleChooseProduct = (total) => {
     setCount(total);
-    countTotalSum({
+
+    let localChosenProducts = [...chosenProducts];
+
+    const productItem = {
+      ...product,
       sum: total * product.price,
-      name: product.name,
       qty: total,
-      price: product.price,
-    });
-  }
+    };
+
+    if (total) {
+      const index = localChosenProducts.findIndex(
+        ({ id }) => id === product.id
+      );
+
+      if (index >= 0) localChosenProducts[index] = productItem;
+      else localChosenProducts.push(productItem);
+    } else {
+      localChosenProducts = localChosenProducts?.filter(
+        ({ id }) => id !== product?.id
+      );
+    }
+
+    dispatch(reducerToChosenProducts(localChosenProducts));
+    dispatch(reducerStep(0));
+  };
   return (
     <Card sx={{ px: "10px" }}>
       <Grid container direction="column">
@@ -72,7 +108,7 @@ function Product({ product, countTotalSum, resetCount, pushResetCount }) {
                   color="primary"
                   aria-label="reduce"
                   disabled={count === 0}
-                  onClick={() => chooseProduct(count - 1)}
+                  onClick={() => handleChooseProduct(count - 1)}
                   size="small"
                 >
                   <RemoveIcon fontSize="small" />
@@ -89,15 +125,11 @@ function Product({ product, countTotalSum, resetCount, pushResetCount }) {
                   {count}
                 </Box>
 
-                {/* <IconButton color="primary" disabled>
-                  {count}
-                </IconButton> */}
-
                 <IconButton
                   color="primary"
                   aria-label="increase"
                   disabled={count === product.qty}
-                  onClick={() => chooseProduct(count + 1)}
+                  onClick={() => handleChooseProduct(count + 1)}
                   size="small"
                 >
                   <AddIcon fontSize="small" />
@@ -110,5 +142,9 @@ function Product({ product, countTotalSum, resetCount, pushResetCount }) {
     </Card>
   );
 }
+
+Product.propTypes = {
+  product: PropTypes.object,
+};
 
 export default Product;

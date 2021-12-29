@@ -1,40 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
-// import "./vending-machine.css";
-
-import { Container, Box, Grid, Card } from "@mui/material";
+// MUI
+import { Grid, Card } from "@mui/material";
 
 // Components
 import Product from "./product/Product";
 
-function ProductsSpace({
-  getChosenProducts,
-  resetCount,
-  chosenProducts,
-  products,
-}) {
-  // const [chosenProducts, setChosenProducts] = useState([]);
+// Store
+import { useSelector } from "react-redux";
 
-  // useEffect(() => getChosenProducts(chosenProducts), [chosenProducts]);
+function ProductsSpace() {
+  const products = useSelector((state) => state.products.data);
 
-  function countTotalSum(item) {
-    const filtredProducts = chosenProducts.filter(
-      ({ name }) => name !== item?.name
-    );
-
-    if (item.sum) getChosenProducts([...filtredProducts, item]);
-    else getChosenProducts(filtredProducts);
-  }
   return (
-    <Card sx={{ padding: 2, backgroundColor: "primary.dark" }}>
+    <Card sx={{ padding: 2, backgroundColor: "#ededed" }}>
       <Grid container spacing={2}>
         {products.map((item) => (
           <Grid item xs={3} key={item.id}>
-            <Product
-              product={item}
-              countTotalSum={countTotalSum}
-              resetCount={resetCount}
-            />
+            <Product product={item} />
           </Grid>
         ))}
       </Grid>

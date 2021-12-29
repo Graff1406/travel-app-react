@@ -1,7 +1,8 @@
-import VendingMachineLayout from './layouts/default/VendingMachineLayout'
+// Layout
+import VendingMachineLayout from "./layouts/VendingMachine";
 
 function App() {
-  return <VendingMachineLayout />
+  return <VendingMachineLayout />;
 }
 
 export default App;
